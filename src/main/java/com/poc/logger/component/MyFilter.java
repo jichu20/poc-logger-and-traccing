@@ -1,7 +1,8 @@
 package com.poc.logger.component;
 
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.Arrays;
+import java.util.UUID;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,10 +18,9 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import brave.Span;
 import brave.Tracer;
+import brave.Tracing;
+import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
-import brave.propagation.TraceContextOrSamplingFlags;
-import brave.propagation.TraceIdContext;
-import brave.servlet.HttpServletRequestWrapper;
 
 @Component
 // @Order(TraceWebServletAutoConfiguration.TRACING_FILTER_ORDER + 1)
@@ -41,18 +41,14 @@ class MyFilter extends GenericFilterBean {
         }
 
         String xTraceId = ((HttpServletRequest) request).getHeader("X-Rho-Traceid");
+
         if (StringUtils.isEmpty(xTraceId)) {
-            xTraceId = currentSpan.context().traceIdString();
+            xTraceId = UUID.randomUUID().toString();
+            ExtraFieldPropagation.set(currentSpan.context(), "X-Rho-Traceid", xTraceId);
         }
         ((HttpServletResponse) response).addHeader("X-Rho-Traceid", xTraceId);
 
-        currentSpan.tag("X-Rho-Traceid", xTraceId);
         MDC.put("X-Rho-Traceid", xTraceId);
-
-        // HttpServletRequest req = (HttpServletRequest) request;
-        // MutableHttpServletRequest mutableRequest = new
-        // MutableHttpServletRequest(req);
-        // mutableRequest.putHeader("X-Rho-Traceid", "custom value");
 
         chain.doFilter(request, response);
     }
