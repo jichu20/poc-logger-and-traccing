@@ -17,9 +17,8 @@
     <logger name="org.springframework.cloud.sleuth.instrument.reactor" level="TRACE"/>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <!-- <appender-ref ref="FILE"/> -->
-        <appender-ref ref="omega-json-appender" />
+        <!-- <appender-ref ref="CONSOLE"/> -->
+        <appender-ref ref="complete-logger" />
     </root>
 
 </configuration>

@@ -21,7 +21,7 @@
 
     <appender name="complete-logger" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%yellow(%d{HH:mm:ss.SSS}) %highlight(%-5level) [${springAppName:-}, trace=%X{X-B3-TraceId:-},span=%X{X-B3-SpanId:-}] %boldGreen(%logger{40}) - %msg%n</pattern>
+            <pattern>%yellow(%d{HH:mm:ss.SSS}) %highlight(%-5level) [${springAppName:-}, trace=%X{X-Rho-Traceid:-},span=%X{X-B3-SpanId:-}] %boldGreen(%logger{40}) - %msg%n</pattern>
         </layout>
     </appender>
 
@@ -36,8 +36,7 @@
                 <pattern>
                     <pattern>
         			{
-                        "test": "%X{X-Rho-Traceid:-}",
-                        "test2": "%X{Content-type:-}",
+                        "X-Rho-Traceid": "%X{X-Rho-Traceid:-}",
         				"level": "%level",
   						"message": "%message",
 						"spanId": "%X{X-B3-SpanId:-}",
