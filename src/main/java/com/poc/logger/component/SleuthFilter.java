@@ -1,7 +1,6 @@
 package com.poc.logger.component;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
@@ -9,46 +8,54 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+
+import com.poc.logger.util.Constant;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import brave.Span;
 import brave.Tracer;
-import brave.Tracing;
-import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
 
 @Component
-// @Order(TraceWebServletAutoConfiguration.TRACING_FILTER_ORDER + 1)
-class MyFilter extends GenericFilterBean {
+public class SleuthFilter extends GenericFilterBean {
 
     private final Tracer tracer;
 
-    MyFilter(Tracer tracer) {
+    SleuthFilter(Tracer tracer) {
         this.tracer = tracer;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
         Span currentSpan = this.tracer.currentSpan();
+
         if (currentSpan == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        String xTraceId = ((HttpServletRequest) request).getHeader("X-Rho-Traceid");
+        // Recuperamos el valor de la cabecera
+        String xTraceId = ((HttpServletRequest) request).getHeader(Constant.X_TRACE_ID_HEADER);
 
-        if (StringUtils.isEmpty(xTraceId)) {
+        // Si la cabecera no viene y el valor es nulo, generamos un nuevo valor
+        if (StringUtils.isBlank(xTraceId)) {
             xTraceId = UUID.randomUUID().toString();
-            ExtraFieldPropagation.set(currentSpan.context(), "X-Rho-Traceid", xTraceId);
+            // Agregamos el valor a la cabecera
+            ExtraFieldPropagation.set(currentSpan.context(), Constant.X_TRACE_ID_HEADER, xTraceId);
         }
-        ((HttpServletResponse) response).addHeader("X-Rho-Traceid", xTraceId);
 
-        MDC.put("X-Rho-Traceid", xTraceId);
+        // Agrego la cabecera a la respuesta
+        ((HttpServletResponse) response).addHeader(Constant.X_TRACE_ID_HEADER, xTraceId);
+
+        // Hacemos accesible el valor de la cabecera para las trazas
+        MDC.put(Constant.X_TRACE_ID_HEADER, xTraceId);
 
         chain.doFilter(request, response);
     }
