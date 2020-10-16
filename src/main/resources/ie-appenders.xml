@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+
+    <!-- <appender name="OMEGA_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <charset>UTF-8</charset>
+        </encoder>
+        <layout class="com.bbva.seiri.log.logback.OmegaJsonLayout" />
+    </appender> -->
+
+
+
+    <appender name="standar-logger" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%yellow(%d{HH:mm:ss.SSS}) %highlight(%-5level) %boldGreen(%logger{40}) - %msg%n</pattern>
+            <!-- <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern> -->
+        </layout>
+    </appender>
+
+    <appender name="complete-logger" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%yellow(%d{HH:mm:ss.SSS}) %highlight(%-5level) [${springAppName:-}, trace=%X{X-B3-TraceId:-},span=%X{X-B3-SpanId:-}] %boldGreen(%logger{40}) - %msg%n</pattern>
+        </layout>
+    </appender>
+
+
+    <appender name="omega-json-appender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <fieldName>creationDate</fieldName>
+                    <pattern>[UNIX_TIMESTAMP_AS_NUMBER]</pattern>
+                </timestamp>
+                <pattern>
+                    <pattern>
+        			{
+                        "test": "%X{X-Rho-Traceid:-}",
+                        "test2": "%X{Content-type:-}",
+        				"level": "%level",
+  						"message": "%message",
+						"spanId": "%X{X-B3-SpanId:-}",
+						"traceId": "%X{X-B3-TraceId:-}",
+						"properties": {
+							"app-name": "${springAppName:-}",
+							"class": "%logger{40}", 
+							"thread": "%thread"
+  						}
+        			}
+                    </pattern>
+                </pattern>
+
+            </providers>
+        </encoder>
+    </appender>
+
+
+</included>
