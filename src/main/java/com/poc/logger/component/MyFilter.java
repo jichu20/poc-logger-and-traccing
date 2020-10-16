@@ -10,12 +10,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import brave.Span;
 import brave.Tracer;
+import brave.propagation.ExtraFieldPropagation;
 import brave.propagation.TraceContextOrSamplingFlags;
 import brave.propagation.TraceIdContext;
 import brave.servlet.HttpServletRequestWrapper;
@@ -37,11 +39,6 @@ class MyFilter extends GenericFilterBean {
             chain.doFilter(request, response);
             return;
         }
-        // for readability we're returning trace id in a hex form
-        // ((HttpServletResponse) response).addHeader("TraceId-Propio",
-        // currentSpan.context().traceIdString());
-        // ((HttpServletResponse) response).addHeader("SpanId-Propio",
-        // currentSpan.context().spanIdString());
 
         String xTraceId = ((HttpServletRequest) request).getHeader("X-Rho-Traceid");
         if (StringUtils.isEmpty(xTraceId)) {
@@ -50,19 +47,12 @@ class MyFilter extends GenericFilterBean {
         ((HttpServletResponse) response).addHeader("X-Rho-Traceid", xTraceId);
 
         currentSpan.tag("X-Rho-Traceid", xTraceId);
+        MDC.put("X-Rho-Traceid", xTraceId);
 
         // HttpServletRequest req = (HttpServletRequest) request;
         // MutableHttpServletRequest mutableRequest = new
         // MutableHttpServletRequest(req);
-        // mutableRequest.putHeader("x-custom-header", "custom value");
-
-        // CustomHttpServletRequest wrapper = new
-        // CustomHttpServletRequest((HttpServletRequest) request);
-        // wrapper.addHeader("ssoid-token", "ssss");
-
-        // Enumeration headerNames = ((HttpServletRequest)
-        // request).getHeaderNames();
-        // ((HttpServletRequest) request).
+        // mutableRequest.putHeader("X-Rho-Traceid", "custom value");
 
         chain.doFilter(request, response);
     }

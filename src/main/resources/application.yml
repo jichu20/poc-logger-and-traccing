@@ -6,7 +6,12 @@ spring:
   sleuth:
     propagation-keys: # Propaga las cabeceras
       - X-Rho-Traceid
-    log:
-      slf4j:
-        whitelisted-mdc-keys: # habilita las cabeceras para ser pintadas / utilizadas en logback
-          - X-Rho-Traceid
+    # log:
+    #   slf4j:
+    #     whitelisted-mdc-keys: # habilita las cabeceras para ser pintadas / utilizadas en logback
+    #       - X-Rho-Traceid
+    # propagation:
+    #   tag:
+    #     enabled: true
+    #     whitelisted-keys:
+    #       - X-Rho-Traceid

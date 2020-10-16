@@ -19,6 +19,7 @@
     <root level="INFO">
         <!-- <appender-ref ref="CONSOLE"/> -->
         <appender-ref ref="complete-logger" />
+        <!-- <appender-ref ref="omega-json-appender" /> -->
     </root>
 
 </configuration>
