@@ -1,12 +1,17 @@
 spring:
   application:
     name: poc-logger
-  zipkin:
-    enabled: false
+  # zipkin:
+  #   enabled: true
+  #   baseUrl: https://webhook.site/1f66b8f8-d524-4a61-9ef9-b481b3cd53da
+  #   sender:
+  #     type: web
   sleuth:
-    propagation-keys: # Propaga las cabeceras
-      - X-Rho-Traceid
-    log:
-      slf4j:
-        whitelisted-mdc-keys: # habilita las cabeceras para ser pintadas / utilizadas en logback
-          - X-Rho-Traceid
+    enabled: true
+    sampler:
+      probability: 1.0
+      percentage: 1.0
+
+logger:
+  monitorResource: mrIdtest
+  namespace: namespaceTest

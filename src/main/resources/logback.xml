@@ -6,20 +6,38 @@
 
 <configuration>
     <include resource="ie-appenders.xml"/>
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <!-- <include resource="org/springframework/boot/logging/logback/base.xml"/> -->
 
-    <logger name="feign" level="DEBUG"/>
+    <!-- <logger name="feign" level="DEBUG"/>
     <logger name="org.springframework.cloud.sleuth" level="TRACE"/>
     <logger name="org.springframework.boot.autoconfigure.logging" level="INFO"/>
     <logger name="org.springframework.cloud.sleuth.log" level="DEBUG"/>
     <logger name="org.springframework.cloud.sleuth.trace" level="DEBUG"/>
     <logger name="org.springframework.cloud.sleuth.instrument.rxjava" level="DEBUG"/>
-    <logger name="org.springframework.cloud.sleuth.instrument.reactor" level="TRACE"/>
+    <logger name="org.springframework.cloud.sleuth.instrument.reactor" level="TRACE"/> -->
+
+    <!-- <root name="org.springframework" level="ERROR">
+        <appender-ref ref="complete-logger" />
+    </root> -->
+    <!-- <root name="com.poc" level="info">
+        <appender-ref ref="complete-logger" />
+    </root> -->
+    <!-- <root name="com.poc.logger.component.LoggingSpanHandler" level="info">
+        <appender-ref ref="rho-json-appender" />
+    </root> -->
+    <!-- <root name="com.poc" level="info">
+        <appender-ref ref="delta-appender" />
+    </root> -->
+
+
+    <logger name="org.springframework" level="ERROR"/>
+    
+    <logger name="com.poc.logger.component.LoggingSpanHandler" level="INFO">
+        <appender-ref ref="rho-json-appender" />
+    </logger>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <!-- <appender-ref ref="FILE"/> -->
-        <appender-ref ref="omega-json-appender" />
+        <appender-ref ref="delta-appender" />
     </root>
 
 </configuration>

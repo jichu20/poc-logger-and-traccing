@@ -1,5 +1,7 @@
 package com.poc.logger.controller;
 
+import java.util.List;
+
 import com.poc.logger.service.SleuthService;
 
 import org.slf4j.Logger;
@@ -32,4 +34,5 @@ public class DefaultController {
         return new ResponseEntity<String>("Arriba", HttpStatus.ACCEPTED);
 
     }
+
 }

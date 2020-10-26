@@ -1,2 +1,2 @@
 GET http://localhost:8080
-X-Rho-Traceid: 665cf52d-1245-494c-a51e-b432c3a4a927
+# X-Rho-Traceid: 665cf52d-1245-494c-a51e-b432c3a4a9xx
