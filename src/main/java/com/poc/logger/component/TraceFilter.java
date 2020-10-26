@@ -71,6 +71,7 @@ public class TraceFilter extends GenericFilterBean {
 
         // Agrego la cabecera a la respuesta
         ((HttpServletResponse) response).addHeader(Constant.RHO_SPAN_ID_HEADER, xSpanId);
+        currentSpan.tag(Constant.RHO_SPAN_ID_HEADER, xSpanId);
 
         // Hacemos accesible el valor de la cabecera para las trazas
         MDC.put(Constant.RHO_SPAN_ID_HEADER, xSpanId);
@@ -96,6 +97,7 @@ public class TraceFilter extends GenericFilterBean {
 
         // Agrego la cabecera a la respuesta
         ((HttpServletResponse) response).addHeader(Constant.RHO_PARENTSPANID_HEADER, xParentSpanId);
+        currentSpan.tag(Constant.RHO_PARENTSPANID_HEADER, xParentSpanId);
 
         // Hacemos accesible el valor de la cabecera para las trazas
         MDC.put(Constant.RHO_PARENTSPANID_HEADER, xParentSpanId);
@@ -118,6 +120,7 @@ public class TraceFilter extends GenericFilterBean {
 
         // Agrego la cabecera a la respuesta
         ((HttpServletResponse) response).addHeader(Constant.RHO_TRACE_ID_HEADER, xTraceId);
+        currentSpan.tag(Constant.RHO_TRACE_ID_HEADER, xTraceId);
 
         // Hacemos accesible el valor de la cabecera para las trazas
         MDC.put(Constant.RHO_TRACE_ID_HEADER, xTraceId);

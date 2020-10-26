@@ -1,5 +1,6 @@
 package com.poc.logger.configuration;
 
+import com.poc.logger.component.LoggingSpanHandler;
 import com.poc.logger.util.Constant;
 
 import org.springframework.context.annotation.Bean;
@@ -22,10 +23,12 @@ public class SleuthConfiguration {
     }
 
     @Bean
-    Tracing tracing() {
+    Tracing tracing(LoggingSpanHandler loggingSpanHandler) {
 
-        return Tracing.newBuilder().propagationFactory(ExtraFieldPropagation.newFactoryBuilder(B3Propagation.FACTORY)
-                .addField(Constant.RHO_TRACE_ID_HEADER).addField(Constant.RHO_PARENTSPANID_HEADER).build()).build();
+        return Tracing.newBuilder()
+                .propagationFactory(ExtraFieldPropagation.newFactoryBuilder(B3Propagation.FACTORY).addField(Constant.RHO_TRACE_ID_HEADER)
+                        .addField(Constant.RHO_PARENTSPANID_HEADER).addField(Constant.RHO_SPAN_ID_HEADER).build())
+                .addSpanHandler(loggingSpanHandler).build();
 
     }
 
@@ -34,7 +37,9 @@ public class SleuthConfiguration {
         return new SpanHandler() {
             @Override
             public boolean end(TraceContext traceContext, MutableSpan span, Cause cause) {
-                System.out.println("test*******");
+                System.out.println("*******");
+                System.out.println(span.name());
+                System.out.println("*******");
                 return true;
             }
         };

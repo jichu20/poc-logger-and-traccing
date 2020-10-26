@@ -21,7 +21,6 @@ public class SleuthService {
 
     public void doSomeWorkSameSpan() throws InterruptedException {
 
-        System.out.println(autoConfig);
 
         Thread.sleep(1000L);
         logger.info("Doing some work");
@@ -30,5 +29,4 @@ public class SleuthService {
                 String.class);
     }
 
-    
 }

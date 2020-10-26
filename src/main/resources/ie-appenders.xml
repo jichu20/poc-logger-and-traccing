@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
 
+
+    <!-- custom properties -->
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <springProperty scope="context" name="mrId" source="logger.monitorResource"/>
 
-    <!-- <appender name="OMEGA_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <charset>UTF-8</charset>
-        </encoder>
-        <layout class="com.bbva.seiri.log.logback.OmegaJsonLayout" />
-    </appender> -->
+    <!-- custom converters -->
+    <conversionRule conversionWord="nanos" converterClass="com.poc.logger.converter.NanoSecondsConverter" />
 
-
+    <!-- appenders -->
 
     <appender name="standar-logger" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%yellow(%d{HH:mm:ss.SSS}) %highlight(%-5level) %boldGreen(%logger{40}) - %msg%n</pattern>
-            <!-- <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern> -->
         </layout>
     </appender>
 
     <appender name="complete-logger" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%yellow(%d{HH:mm:ss.SSS}) %highlight(%-5level) [${springAppName:-}, trace=%X{X-Rho-Traceid:-},span=%X{X-B3-SpanId:-}] %boldGreen(%logger{40}) - %msg%n</pattern>
+            <pattern>%yellow(%d{HH:mm:ss.SSS}) %highlight(%-5level) [${springAppName:-}, trace=%X{X-B3-TraceId:-},span=%X{X-B3-SpanId:-}] %boldGreen(%logger{40}) - %msg%n</pattern>
         </layout>
     </appender>
-
 
     <appender name="omega-json-appender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -36,11 +34,10 @@
                 <pattern>
                     <pattern>
         			{
-                        "X-Rho-Traceid": "%X{X-Rho-Traceid:-}",
         				"level": "%level",
   						"message": "%message",
 						"spanId": "%X{X-B3-SpanId:-}",
-						"traceId": "%X{X-B3-TraceId:-}",
+						"traceId": "%X{X-Rho-Traceid:-}",
 						"properties": {
 							"app-name": "${springAppName:-}",
 							"class": "%logger{40}", 
@@ -53,6 +50,66 @@
             </providers>
         </encoder>
     </appender>
+
+    <appender name="delta-appender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="net.logstash.logback.layout.LoggingEventCompositeJsonLayout">
+            <prefix class="ch.qos.logback.classic.PatternLayout">
+                <pattern>V2|LOG.%level|</pattern>
+            </prefix>
+            <providers>
+
+                <pattern>
+                    <pattern>
+        			{
+                        "creationDate": "#asLong{%-19nanos}",
+        				"level": "%level",
+  						"message": "%message",
+						"spanId": "%X{X-B3-SpanId:-}",
+						"traceId": "%X{X-Rho-Traceid:-}",
+						"properties": {
+							"app-name": "${springAppName:-}",
+							"class": "%logger{40}", 
+							"thread": "%thread"
+  						}
+        			} %n
+                    </pattern>
+                </pattern>
+
+            </providers>
+            <lineSeparator>UNIX</lineSeparator>
+        </layout>
+    </appender>
+
+
+    <appender name="rho-json-appender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="net.logstash.logback.layout.LoggingEventCompositeJsonLayout">
+            <prefix class="ch.qos.logback.classic.PatternLayout">
+                <pattern>V2|SPAN|</pattern>
+            </prefix>
+            <providers>
+                <pattern>
+                    <pattern>
+                    {
+                        "mrId": "${mrId}",
+                        "spanId": "%X{X-Rho-Spanid:-}",
+                        "startDate": "#asLong{%X{startTime:-}}",
+                        "finishDate": "#asLong{%X{finishTime:-}}",
+                        "name": "%X{name:-}",
+                        "traceId": "%X{X-Rho-Traceid:-}",
+                        "parentSpan":"%X{parentSpan}",
+                        "properties": {
+							"app-name": "${springAppName:-}", 
+                            "message": "%message"
+  						}
+                    }
+                    </pattern>
+                </pattern>
+
+            </providers>
+            <lineSeparator>UNIX</lineSeparator>
+        </layout>
+    </appender>
+
 
 
 </included>
