@@ -13,14 +13,6 @@ public class PocLoggerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PocLoggerApplication.class, args);
-		// displayAllBeans();
-	}
-
-	public static void displayAllBeans() {
-		String[] allBeanNames = applicationContext.getBeanDefinitionNames();
-		for (String beanName : allBeanNames) {
-			System.out.println(beanName);
-		}
 	}
 
 }

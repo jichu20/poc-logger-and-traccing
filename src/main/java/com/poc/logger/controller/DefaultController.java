@@ -1,6 +1,5 @@
 package com.poc.logger.controller;
 
-import java.util.List;
 
 import com.poc.logger.service.SleuthService;
 

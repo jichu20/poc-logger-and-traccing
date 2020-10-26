@@ -33,10 +33,12 @@ public class LoggingSpanHandler extends SpanHandler {
 
             MDC.put("parentSpan", ((BaggageFields) context.extra().get(0)).getValue(BaggageField.create(Constant.RHO_PARENTSPANID_HEADER)));
             MDC.put(Constant.RHO_SPAN_ID_HEADER, UUID.randomUUID().toString());
+
             LOGGER.info("span son");
 
         } else {
             MDC.put("parentSpan", null);
+            
             LOGGER.info("span father");
         }
 
